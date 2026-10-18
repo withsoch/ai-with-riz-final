@@ -1,26 +1,10 @@
 "use client";
-import { useState, useEffect, Suspense, CSSProperties } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { ChevronDown } from "lucide-react";
 import AnimateIn from "@/components/AnimateIn";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 
 /* ─── data ──────────────────────────────────────────────────────────────────── */
-
-const INDUSTRIES = [
-  "All",
-  "Real Estate",
-  "Professional Services",
-  "Healthcare",
-  "E-commerce",
-  "Technology",
-  "Recruitment",
-  "Financial Services",
-  "Hospitality",
-  "Marketing",
-  "Education",
-  "Logistics",
-];
 
 const STAT_CARDS = [
   { label: "SYSTEMS", number: "20", desc: "shipped across industries" },
@@ -29,35 +13,30 @@ const STAT_CARDS = [
   { label: "FASTEST", number: "1 WK", desc: "from brief to live" },
 ];
 
-const CASE_IMAGES: Record<string, string> = {
-  realEstate: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80",
-  law: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80",
-  healthcare: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80",
-  ecommerce: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80",
-  saas: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&q=80",
-  recruitment: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&q=80",
-  finance: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80",
-  hospitality: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80",
-  marketing: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400&q=80",
-  education: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&q=80",
-  property: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80",
-  accounting: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=400&q=80",
-  coaching: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80",
-  logistics: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80",
+/* One-line takeaway per case, for a founder reading the card. Drafted from
+   each case's own problem and outcome; no new facts. */
+const TAKEAWAYS: Record<string, string> = {
+  "cs-01": "Speed to first contact decides most deals. Automate the reply, not the relationship.",
+  "cs-02": "Intake is where cases go missing. Route them the moment they arrive.",
+  "cs-03": "A no-show is a slot you can still sell. Remind early, refill automatically.",
+  "cs-04": "Most tickets repeat. Let the system answer those so people handle the rest.",
+  "cs-05": "Trials convert when someone shows up at the right moment. Make that moment automatic.",
+  "cs-06": "Screening is pattern-matching. Give it to the system, keep the judgement for people.",
+  "cs-07": "Leads rarely die from a bad pitch. They die from no follow-up.",
+  "cs-08": "Every booking is a chance to sell more and learn more. Ask at the right time, every time.",
+  "cs-09": "If a report takes a day to build, it stops getting built. Make it build itself.",
+  "cs-10": "Drop-off is quiet. Spot the signal early and nudge before the student leaves.",
+  "cs-11": "Urgent and routine look the same in an inbox. Triage first, then dispatch.",
+  "cs-12": "Invoices follow rules. Anything that follows rules can run on its own.",
+  "cs-13": "The prep before a call is work too. Automate it and buy back selling time.",
+  "cs-14": "Churn shows up in the data before the cancellation. Watch it weekly.",
+  "cs-15": "Alerts nobody trusts get ignored. Fewer false positives beat more alerts.",
+  "cs-16": "One piece of work can feed every channel. Repurpose once, publish everywhere.",
+  "cs-17": "The first reply sets the tone. Match people to the right person fast.",
+  "cs-18": "Generic reminders get ignored. A personal one gets the cart back.",
+  "cs-19": "Tell customers about a delay before they ask, and the tickets never arrive.",
+  "cs-20": "A proposal is a template plus judgement. Automate the template.",
 };
-
-const ACCENT_PALETTE = [
-  "#e8431b", // coral (brand-derived, darkened for AA contrast)
-  "#B8562F", // rust
-  "#5E7145", // olive / sage
-  "#C2410C", // deep coral / burnt orange
-  "#2E7C74", // teal
-  "#8C6A1E", // muted gold
-  "#B5576B", // dusty rose
-  "#3E6B4F", // forest green
-  "#8A4B3B", // terracotta
-  "#A15A2A", // amber / ochre
-];
 
 const caseRowsBase = [
   {
@@ -67,7 +46,6 @@ const caseRowsBase = [
     title: "AI Lead Qualification & Agent Routing",
     result: "8 min first contact · 34% conversion rate",
     industry: "Real Estate",
-    imageKey: "realEstate",
     details: {
       before: [
         "40 leads/week, called in arrival order",
@@ -97,7 +75,6 @@ const caseRowsBase = [
     title: "Client Intake Automation & Case Routing",
     result: "12 min response · 3 hrs/day saved",
     industry: "Professional Services",
-    imageKey: "law",
     details: {
       before: [
         "3 hrs/day paralegal time on intake",
@@ -127,7 +104,6 @@ const caseRowsBase = [
     title: "Appointment Reminder & Slot Recovery",
     result: "50% fewer no-shows · 73% slots refilled",
     industry: "Healthcare",
-    imageKey: "healthcare",
     details: {
       before: [
         "18% no-show rate (32 appts/week lost)",
@@ -157,7 +133,6 @@ const caseRowsBase = [
     title: "AI Support Triage & Auto-Resolution",
     result: "67% auto-resolved · 18 min response",
     industry: "E-commerce",
-    imageKey: "ecommerce",
     details: {
       before: [
         "120+ tickets/week, 100% manual",
@@ -187,7 +162,6 @@ const caseRowsBase = [
     title: "Trial-to-Paid Conversion Workflow",
     result: "2.1× conversion · 9% → 19%",
     industry: "Technology",
-    imageKey: "saas",
     details: {
       before: [
         "9% trial-to-paid conversion",
@@ -217,7 +191,6 @@ const caseRowsBase = [
     title: "CV Screening & Candidate Ranking",
     result: "Same-day shortlist · 75% less time",
     industry: "Recruitment",
-    imageKey: "recruitment",
     details: {
       before: [
         "80 applications per role average",
@@ -247,7 +220,6 @@ const caseRowsBase = [
     title: "Lead Qualification & Personalised Nurture",
     result: "100% follow-up · 22% conversion",
     industry: "Financial Services",
-    imageKey: "finance",
     details: {
       before: [
         "40% follow-up rate on inbound leads",
@@ -277,7 +249,6 @@ const caseRowsBase = [
     title: "Reservation Upsell & Guest Feedback Loop",
     result: "14% upsell conversion · 31% feedback rate",
     industry: "Hospitality",
-    imageKey: "hospitality",
     details: {
       before: [
         "No pre-visit communication",
@@ -307,7 +278,6 @@ const caseRowsBase = [
     title: "Automated Monthly Client Reporting",
     result: "89% time reduction · on time every month",
     industry: "Marketing",
-    imageKey: "marketing",
     details: {
       before: [
         "3 days per client per month on reporting",
@@ -337,7 +307,6 @@ const caseRowsBase = [
     title: "Student Engagement & Completion",
     result: "Drop-off 42% → 28% · 5 hrs/week saved",
     industry: "Education",
-    imageKey: "education",
     details: {
       before: [
         "42% student drop-off rate",
@@ -367,7 +336,6 @@ const caseRowsBase = [
     title: "Maintenance Request Triage & Dispatch",
     result: "<4 hr urgent dispatch · 12 hrs/week saved",
     industry: "Real Estate",
-    imageKey: "property",
     details: {
       before: [
         "14 hrs/week ops manager on triage",
@@ -397,7 +365,6 @@ const caseRowsBase = [
     title: "Accounts Payable Automation",
     result: "77% time reduction · same-day processing",
     industry: "Financial Services",
-    imageKey: "accounting",
     details: {
       before: [
         "22 hrs/week manual AP processing",
@@ -427,7 +394,6 @@ const caseRowsBase = [
     title: "Discovery Call Booking & Pre-Call Prep",
     result: "52% conversion · 6 more coaching hrs/week",
     industry: "Healthcare",
-    imageKey: "coaching",
     details: {
       before: [
         "90 min/day on intake admin",
@@ -457,7 +423,6 @@ const caseRowsBase = [
     title: "Churn Risk Detection & Intervention",
     result: "65% churn reduction · weekly health scores",
     industry: "Technology",
-    imageKey: "saas",
     details: {
       before: [
         "4-6 churns per month, all reactive",
@@ -487,7 +452,6 @@ const caseRowsBase = [
     title: "Transaction Anomaly Detection & Alerts",
     result: "<25 min merchant alert · 50% fewer false positives",
     industry: "Financial Services",
-    imageKey: "finance",
     details: {
       before: [
         "6-8 hr merchant notification delay",
@@ -517,7 +481,6 @@ const caseRowsBase = [
     title: "Content Repurposing Pipeline",
     result: "4× output · $800/month saved · same day",
     industry: "Marketing",
-    imageKey: "marketing",
     details: {
       before: [
         "$800/month VA cost for repurposing",
@@ -547,7 +510,6 @@ const caseRowsBase = [
     title: "Patient Intake & Therapist Matching",
     result: "<20 min response · 2 hrs/day saved",
     industry: "Healthcare",
-    imageKey: "healthcare",
     details: {
       before: [
         "2 hrs/day on intake and matching",
@@ -577,7 +539,6 @@ const caseRowsBase = [
     title: "AI Personalised Abandoned Cart Recovery",
     result: "6.4% recovery rate · was 2.1%",
     industry: "E-commerce",
-    imageKey: "ecommerce",
     details: {
       before: [
         "68% cart abandonment",
@@ -607,7 +568,6 @@ const caseRowsBase = [
     title: "Proactive Shipment Delay Communication",
     result: "82% fewer WISMO tickets · 100% proactive",
     industry: "Logistics",
-    imageKey: "logistics",
     details: {
       before: [
         "340+ WISMO tickets per month",
@@ -637,7 +597,6 @@ const caseRowsBase = [
     title: "Automated Proposal Generation",
     result: "76% time reduction · same-day delivery",
     industry: "Professional Services",
-    imageKey: "law",
     details: {
       before: [
         "6-8 hrs per proposal writing",
@@ -662,15 +621,11 @@ const caseRowsBase = [
   },
 ];
 
-const caseRows = caseRowsBase.map((row, i) => ({
-  ...row,
-  accent: ACCENT_PALETTE[i % ACCENT_PALETTE.length],
-}));
+const caseRows = caseRowsBase;
 
 /* ─── page ───────────────────────────────────────────────────────────────────── */
 
 function CaseStudiesContent() {
-  const [activeFilter, setActiveFilter] = useState("All");
   const [activeCase, setActiveCase] = useState<string | null>(null);
   const searchParams = useSearchParams();
 
@@ -683,125 +638,19 @@ function CaseStudiesContent() {
     });
   }, [searchParams]);
 
-  const visibleRows =
-    activeFilter === "All"
-      ? caseRows
-      : caseRows.filter((row) => row.industry === activeFilter);
 
   return (
     <main style={{ background: "var(--bg)" }}>
       <style>{`
-        .proof-row {
-          display: grid;
-          grid-template-columns: 60px 180px 1fr 1fr auto;
-          gap: 24px;
-          align-items: center;
-          padding: 28px 0;
-          border-bottom: 1px solid var(--line);
-          border-left: 3px solid transparent;
-          padding-left: 0;
-          transition: background-color 0.22s ease, border-left-color 0.22s ease, border-left-width 0.22s ease, padding-left 0.22s ease;
-          cursor: pointer;
-          text-decoration: none;
-        }
-        .proof-row:hover {
-          background-color: var(--row-accent-bg-hover, rgba(255,92,53,0.02));
-          border-left-color: var(--row-accent, #ff5c35);
-          padding-left: 20px;
-        }
-        .proof-row.active {
-          background-color: var(--row-accent-bg-active, rgba(255,92,53,0.06));
-          border-left-color: var(--row-accent, #ff5c35);
-          border-left-width: 4px;
-          padding-left: 20px;
-        }
-        .proof-row-num {
-          font-family: var(--font-geist-mono), 'Geist Mono', monospace;
-          font-size: 14px;
-          color: var(--row-accent, #ff5c35);
-          letter-spacing: 0.1em;
-        }
-        .proof-row-tag {
-          font-family: var(--font-geist-mono), 'Geist Mono', monospace;
-          font-size: 1rem;
-          font-weight: 600;
-          color: var(--row-accent, #ff5c35);
-          letter-spacing: 0.08em;
-          line-height: 1.4;
-          text-transform: uppercase;
-        }
-        .proof-row-title {
-          font-size: 20px;
-          font-weight: 600;
-          color: #22332C;
-          font-family: var(--font-fraunces), serif;
-        }
-        .proof-row-result {
-          font-size: 14px;
-          color: rgba(34,51,44,0.72);
-          line-height: 1.5;
-        }
-        .proof-row-arrow {
-          display: inline-flex;
-          color: #5E594E;
-          transition: color 0.2s ease-out, transform 0.2s ease-out;
-          justify-self: end;
-        }
-        .proof-row:hover .proof-row-arrow {
-          color: var(--row-accent, #ff5c35);
-        }
-        .proof-row.active .proof-row-arrow {
-          color: var(--row-accent, #ff5c35);
-          transform: rotate(180deg);
-        }
-
-        /* filter tabs */
-        .filter-tabs {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0;
-          border-bottom: 1px solid var(--line);
-          margin-bottom: 48px;
-          padding-bottom: 0;
-        }
-        .filter-tab {
-          display: inline-flex;
-          align-items: center;
-          padding: 8px 4px;
-          margin-right: 24px;
-          font-size: 1rem;
-          font-weight: 500;
-          color: #4A4A45;
-          cursor: pointer;
-          background: none;
-          border: none;
-          border-bottom: 2px solid transparent;
-          border-radius: 0;
-          white-space: nowrap;
-          transition: all 0.25s ease;
-        }
-        .filter-tab:hover {
-          color: #22332C;
-          border-bottom-color: rgba(34,51,44,0.2);
-        }
-        .filter-tab.active {
-          color: #22332C;
-          font-weight: 600;
-          border-bottom: 2px solid #ff5c35;
-        }
-
         /* hero section */
         .case-hero-band {
           background: var(--cream);
           border-bottom: 1px solid var(--line);
         }
         .case-hero-section {
-          padding: 112px 60px;
+          padding: 112px 60px 72px;
           max-width: 1360px;
           margin: 0 auto;
-        }
-        .case-hero-section.case-hero-section--list {
-          padding: 52px 60px 0;
         }
         .case-hero-grid {
           display: grid;
@@ -908,10 +757,7 @@ function CaseStudiesContent() {
 
         @media (max-width: 768px) {
           .case-hero-section {
-            padding: 64px 24px;
-          }
-          .case-hero-section.case-hero-section--list {
-            padding: 32px 24px 0;
+            padding: 96px 24px 48px;
           }
           .case-hero-grid {
             grid-template-columns: 1fr;
@@ -919,191 +765,66 @@ function CaseStudiesContent() {
           }
         }
 
-        @media (max-width: 640px) {
-          .proof-row {
-            grid-template-columns: 32px 1fr auto;
-            row-gap: 6px;
-          }
-          .proof-row-tag,
-          .proof-row-result {
-            grid-column: 1 / -1;
-          }
+        /* ===== CASE CARDS ===== */
+        .cases-section { padding: 72px 0; background: var(--paper); }
+        .cases-wrap { max-width: 1360px; margin: 0 auto; padding: 0 60px; }
+        .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--grid-gap); }
+        .case-card {
+          position: relative; background: #fff;
+          border: 1px solid var(--line); border-radius: var(--radius-card);
+          padding: 30px 30px 26px; display: flex; flex-direction: column; gap: 16px;
+          transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
         }
-
-        .case-row-wrap {
-          transition: opacity 0.2s ease;
+        .case-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--line-2); }
+        .case-card.is-target { border-color: var(--coral); box-shadow: 0 18px 44px rgba(255,92,53,0.14); }
+        .case-card.is-wide { grid-column: 1 / -1; }
+        .case-anchor { position: absolute; top: -96px; }
+        .case-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .case-card-num { font-family: var(--font-geist-mono), monospace; font-size: 13px; font-weight: 600; color: var(--muted); }
+        .case-card-chip {
+          font-family: var(--font-geist-mono), monospace; font-size: 11.5px; font-weight: 600;
+          letter-spacing: 0.06em; text-transform: uppercase; color: var(--coral);
+          background: rgba(255,92,53,0.08); padding: 4px 10px; border-radius: var(--radius-chip);
         }
-        .case-row-wrap.dimmed {
-          opacity: 0.7;
+        .case-card-hero { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; }
+        .case-card-big { font-size: clamp(2.4rem, 1.9rem + 1.8vw, 3.2rem); font-weight: 500; line-height: 1; letter-spacing: -0.02em; color: var(--ink); }
+        .case-card-biglabel { font-size: 15px; color: var(--body); line-height: 1.4; max-width: 28ch; }
+        .case-card-title { margin: 0; font-size: 1.3rem; font-weight: 600; color: var(--ink); line-height: 1.3; }
+        .case-card-ba { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .case-card-label {
+          font-family: var(--font-geist-mono), monospace; font-size: 11.5px; font-weight: 600;
+          letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px;
         }
-        .case-row-wrap.dimmed:hover {
-          opacity: 1;
+        .case-card-label.after { color: var(--coral); }
+        .case-card-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+        .case-card-list li { display: flex; gap: 8px; font-size: 14.5px; line-height: 1.5; color: var(--body); }
+        .case-card-list li::before { content: "→"; color: rgba(34,51,44,0.45); flex-shrink: 0; }
+        .case-card-list.after li { color: var(--ink); }
+        .case-card-list.after li::before { color: var(--coral); }
+        .case-card-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+        .case-card-metric b { display: block; font-size: 1.35rem; font-weight: 600; color: var(--ink); line-height: 1.1; }
+        .case-card-metric span { display: block; font-size: 13px; line-height: 1.4; color: var(--muted); margin-top: 4px; }
+        .case-card-box {
+          margin-top: auto; background: var(--cream); border-radius: 12px; padding: 12px 14px;
+          display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap;
         }
-
-        /* expanded case panel */
-        .case-panel {
-          position: relative;
-          box-sizing: border-box;
-          max-height: 0;
-          overflow: hidden;
-          opacity: 0;
-          background: white;
-          border: 1.5px solid transparent;
-          border-top: none;
-          border-radius: 0 0 20px 20px;
-          transition: max-height 0.4s ease, opacity 0.3s ease;
+        .case-card-take { flex-basis: 100%; margin: 0 0 4px; padding-bottom: 10px; border-bottom: 1px solid var(--line-2); font-size: 15px; line-height: 1.55; color: var(--ink); }
+        .case-card-take strong { color: var(--coral); font-weight: 600; }
+        .case-card-delivered { font-size: 14px; color: var(--ink); }
+        .case-card-delivered strong { color: var(--coral); font-weight: 600; }
+        .case-card-stack { display: flex; flex-wrap: wrap; gap: 6px; }
+        .case-card-stack span {
+          font-family: var(--font-geist-mono), monospace; font-size: 11.5px; color: var(--ink);
+          background: #fff; border: 1px solid var(--line); border-radius: var(--radius-chip); padding: 3px 9px;
         }
-        .case-panel.active {
-          max-height: 900px;
-          opacity: 1;
-          border-color: var(--line);
-          box-shadow: inset 0 3px 0 0 var(--row-accent, #ff5c35);
-        }
-        .case-panel-header {
-          background: #22332C;
-          padding: 20px 36px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .case-panel-header-title {
-          font-size: 16px;
-          font-weight: 600;
-          color: var(--cream);
-          font-family: var(--font-fraunces), serif;
-        }
-        .case-panel-close {
-          background: rgba(255,255,255,0.1);
-          border: 1px solid rgba(255,255,255,0.15);
-          color: var(--cream);
-          font-family: var(--font-geist-mono), 'Geist Mono', monospace;
-          font-size: 14px;
-          padding: 6px 14px;
-          border-radius: 100px;
-          cursor: pointer;
-          transition: background 0.25s ease;
-        }
-        .case-panel-close:hover {
-          background: rgba(255,255,255,0.2);
-        }
-        .case-panel-content {
-          display: grid;
-          grid-template-columns: 280px 1fr 1fr;
-          gap: 0;
-        }
-        .case-panel-image {
-          width: 280px;
-          min-height: 340px;
-          overflow: hidden;
-          position: relative;
-        }
-        .case-panel-image img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          filter: brightness(0.85);
-          display: block;
-        }
-        .case-panel-image-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(255,92,53,0.3) 0%, transparent 60%);
-        }
-        .case-panel-col-ba {
-          padding: 32px 28px;
-          border-right: 1px solid var(--line);
-        }
-        .case-panel-label-sm {
-          font-family: var(--font-geist-mono), 'Geist Mono', monospace;
-          font-size: 1rem;
-          font-weight: 600;
-          color: #ff5c35;
-          letter-spacing: 0.08em;
-          margin-bottom: 12px;
-        }
-        .case-panel-label-sm.after {
-          color: #ff5c35;
-        }
-        .case-panel-list-v2 {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-        .case-panel-list-v2 li {
-          font-size: 14px;
-          color: #22332C;
-          font-weight: 500;
-          line-height: 1.7;
-        }
-        .case-panel-list-v2.after li {
-          color: #22332C;
-          font-weight: 500;
-        }
-        .case-panel-divider-v2 {
-          height: 1px;
-          background: linear-gradient(90deg, #ff5c35, var(--line));
-          margin: 16px 0;
-        }
-        .case-panel-col-outcomes {
-          padding: 32px 28px;
-        }
-        .case-stat-v2 {
-          border-left: 3px solid #ff5c35;
-          padding-left: 14px;
-          margin-bottom: 20px;
-        }
-        .case-stat-v2-number {
-          font-size: 26px;
-          font-weight: 500;
-          color: #22332C;
-          background: linear-gradient(90deg, #22332C, #ff5c35);
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        .case-stat-v2-desc {
-          font-family: var(--font-geist-mono), 'Geist Mono', monospace;
-          font-size: 14px;
-          color: #5E594E;
-          letter-spacing: 0.04em;
-          margin-top: 2px;
-        }
-        .case-stack-pills-v2 {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 6px;
-        }
-        .case-stack-pill-v2 {
-          background: var(--cream);
-          border: 1px solid var(--line);
-          border-radius: 4px;
-          padding: 4px 10px;
-          font-family: var(--font-geist-mono), 'Geist Mono', monospace;
-          font-size: 14px;
-          color: #22332C;
-          font-weight: 500;
-        }
-        .case-delivered-v2-label {
-          margin-top: 16px;
-        }
-        .case-delivered-v2-value {
-          font-size: 16px;
-          font-weight: 600;
-          color: #22332C;
+        @media (max-width: 960px) {
+          .cases-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
-          .case-panel-content {
-            grid-template-columns: 1fr;
-          }
-          .case-panel-image {
-            width: 100%;
-            min-height: 200px;
-          }
-          .case-panel-col-ba {
-            border-right: none;
-            border-bottom: 1px solid var(--line);
-          }
+          .cases-section { padding: 48px 0; }
+          .cases-wrap { padding: 0 24px; }
+          .case-card { padding: 24px 20px 20px; }
+          .case-card-ba { grid-template-columns: 1fr; gap: 14px; }
         }
       `}</style>
 
@@ -1153,128 +874,81 @@ function CaseStudiesContent() {
         </section>
       </div>
 
-      <section className="case-hero-section case-hero-section--list">
-        <div>
-          <nav className="filter-tabs">
-            {INDUSTRIES.map((industry) => (
-              <button
-                key={industry}
-                onClick={() => setActiveFilter(industry)}
-                className={`filter-tab${activeFilter === industry ? " active" : ""}`}
-              >
-                {industry}
-              </button>
-            ))}
-          </nav>
-
-          {visibleRows.map((row, i) => {
-            const isActive = activeCase === row.id;
-            const isDimmed = activeCase !== null && !isActive;
-            const rowAccentStyle = {
-              "--row-accent": row.accent,
-              "--row-accent-bg-hover": `${row.accent}05`,
-              "--row-accent-bg-active": `${row.accent}0F`,
-            } as CSSProperties;
-            return (
-              <AnimateIn
-                as="div"
-                key={row.id}
-                delay={Math.min(i, 6) * 80}
-                className={`case-row-wrap${isDimmed ? " dimmed" : ""}`}
-                style={rowAccentStyle}
-              >
-                <div
-                  id={row.id}
-                  className={`proof-row${isActive ? " active" : ""}`}
-                  onClick={() => setActiveCase(isActive ? null : row.id)}
-                  role="button"
-                  tabIndex={0}
-                  aria-expanded={isActive}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setActiveCase(isActive ? null : row.id);
-                    }
-                  }}
+      <section className="cases-section">
+        <div className="cases-wrap">
+          <div className="cases-grid">
+            {caseRows.map((row, i) => {
+              const [lead, ...rest] = row.details.outcomes;
+              const wide = i === caseRows.length - 1 && caseRows.length % 2 === 1;
+              return (
+                <AnimateIn
+                  key={row.id}
+                  as="article"
+                  delay={(i % 2) * 100}
+                  className={`case-card${wide ? " is-wide" : ""}${activeCase === row.id ? " is-target" : ""}`}
                 >
-                  <span className="proof-row-num">{row.num}</span>
-                  <span className="proof-row-tag">{row.tag}</span>
-                  <span className="proof-row-title">{row.title}</span>
-                  <span className="proof-row-result">{row.result}</span>
-                  <span className="proof-row-arrow" aria-hidden="true">
-                    <ChevronDown size={18} strokeWidth={2} />
-                  </span>
-                </div>
-
-                <div className={`case-panel${isActive ? " active" : ""}`}>
-                  <div className="case-panel-header">
-                    <span className="case-panel-header-title">{row.title}</span>
-                    <button
-                      className="case-panel-close"
-                      onClick={() => setActiveCase(null)}
-                    >
-                      ✕ CLOSE
-                    </button>
+                  <span id={row.id} className="case-anchor" aria-hidden="true" />
+                  <div className="case-card-top">
+                    <span className="case-card-num">{row.num}</span>
+                    <span className="case-card-chip">{row.tag}</span>
                   </div>
 
-                  <div className="case-panel-content">
-                    <div className="case-panel-image">
-                      <img src={CASE_IMAGES[row.imageKey]} alt={row.title} />
-                      <div className="case-panel-image-overlay" />
-                    </div>
+                  <div className="case-card-hero">
+                    <span className="case-card-big">{lead.number}</span>
+                    <span className="case-card-biglabel">{lead.label}</span>
+                  </div>
 
-                    <div className="case-panel-col-ba">
-                      <div className="case-panel-label-sm">BEFORE</div>
-                      <ul className="case-panel-list-v2">
-                        {row.details.before.map((item, i) => (
-                          <li key={i}>
-                            <span style={{ color: "rgba(34,51,44,0.72)" }}>→ </span>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="case-panel-divider-v2" />
-                      <div className="case-panel-label-sm after">AFTER</div>
-                      <ul className="case-panel-list-v2 after">
-                        {row.details.after.map((item, i) => (
-                          <li key={i}>
-                            <span style={{ color: "#ff5c35" }}>→ </span>
-                            {item}
-                          </li>
+                  <h2 className="case-card-title">{row.title}</h2>
+
+                  <div className="case-card-ba">
+                    <div>
+                      <p className="case-card-label">Before</p>
+                      <ul className="case-card-list">
+                        {row.details.before.map((item) => (
+                          <li key={item}>{item}</li>
                         ))}
                       </ul>
                     </div>
+                    <div>
+                      <p className="case-card-label after">What we built</p>
+                      <ul className="case-card-list after">
+                        {row.details.after.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
 
-                    <div className="case-panel-col-outcomes">
-                      <div className="case-panel-label-sm">OUTCOMES</div>
-                      {row.details.outcomes.map((stat, i) => (
-                        <div className="case-stat-v2" key={i}>
-                          <div className="case-stat-v2-number">{stat.number}</div>
-                          <div className="case-stat-v2-desc">{stat.label}</div>
+                  {rest.length > 0 && (
+                    <div className="case-card-metrics">
+                      {rest.map((m) => (
+                        <div key={m.label} className="case-card-metric">
+                          <b>{m.number}</b>
+                          <span>{m.label}</span>
                         </div>
                       ))}
-
-                      <div className="case-panel-label-sm" style={{ marginTop: 24, marginBottom: 10 }}>
-                        STACK
-                      </div>
-                      <div className="case-stack-pills-v2">
-                        {row.details.stack.map((tech, i) => (
-                          <span className="case-stack-pill-v2" key={i}>
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="case-panel-label-sm case-delivered-v2-label">
-                        DELIVERED IN
-                      </div>
-                      <div className="case-delivered-v2-value">{row.details.delivered}</div>
                     </div>
+                  )}
+
+                  <div className="case-card-box">
+                    {TAKEAWAYS[row.id] && (
+                      <p className="case-card-take">
+                        <strong>For a founder:</strong> {TAKEAWAYS[row.id]}
+                      </p>
+                    )}
+                    <span className="case-card-delivered">
+                      Delivered in <strong>{row.details.delivered}</strong>
+                    </span>
+                    <span className="case-card-stack">
+                      {row.details.stack.map((t) => (
+                        <span key={t}>{t}</span>
+                      ))}
+                    </span>
                   </div>
-                </div>
-              </AnimateIn>
-            );
-          })}
+                </AnimateIn>
+              );
+            })}
+          </div>
         </div>
       </section>
     </main>

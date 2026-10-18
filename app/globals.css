@@ -1984,7 +1984,13 @@ html:has(.tdialog[open]) {
    interlock instead of sitting in tidy rows. Copy is written to the tile,
    not the other way round: the small and tall tiles carry shorter bodies.
 --------------------------------------------------------------------------- */
+/* Shorter top than the default section padding: the hero above already
+   ends on its own padding, so the full 112px read as dead space. */
 .whatido { background: var(--bg); }
+.section-pad.whatido { padding-top: 48px; }
+@media (max-width: 767px) {
+  .section-pad.whatido { padding-top: 32px; }
+}
 .whatido-title { max-width: 20ch; }
 
 /* Six cards placed around a reserved centre, with a hub in the void and

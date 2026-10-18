@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { playServiceTone } from "@/lib/sounds";
-import CalBookingButton from "@/components/CalModal";
 
 /**
  * The service grid.
@@ -13,8 +11,6 @@ import CalBookingButton from "@/components/CalModal";
  * are genuinely different lengths, and forcing them into equal columns either
  * strands whitespace or clips text.
  *
- * The last cell is the ask rather than a ninth service, so the section ends
- * on an action instead of trailing off.
  */
 type Slot = "tl" | "tr" | "ml" | "mr" | "bl" | "br";
 
@@ -341,25 +337,6 @@ export default function WhatIDo() {
             </article>
           ))}
 
-          <article className="soft-card wid-card wid-cta">
-            <h3 className="wid-title">Looking for something more specific?</h3>
-            <p className="wid-body">
-              Most of what I build is shaped around the business in front of me. Book a call
-              and we will work out what yours actually needs.
-            </p>
-            <CalBookingButton className="btn-coral wid-cta-btn">Book a call</CalBookingButton>
-          </article>
-
-          <article className="soft-card wid-card wid-quiet">
-            <h3 className="wid-title">Already have something half-built?</h3>
-            <p className="wid-body">
-              Fixing and finishing a system someone else started is normal work, not a special
-              case. Bring it.
-            </p>
-            <Link href="/case-studies" className="wid-link">
-              See what that looks like
-            </Link>
-          </article>
         </div>
       </div>
     </section>

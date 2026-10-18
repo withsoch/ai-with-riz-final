@@ -29,9 +29,7 @@ export type Testimonial = {
   isPlaceholder?: boolean;
 };
 
-// Biola and Kaitlin are real. Gaia and Shahzad are Social Catalyst clients
-// carried over as stand-ins (quotes and numbers are about LinkedIn work, not
-// Riz's) - swap them for Riz's own clients.
+// Real clients only. Add new ones here; never stand-ins.
 export const testimonials: Testimonial[] = [
   {
     id: "biola-babawale",
@@ -66,23 +64,31 @@ export const testimonials: Testimonial[] = [
     image: "/images/testimonials/biola-babawale.jpg",
   },
   {
-    id: "gaia-ferrero",
-    name: "Gaia Ferrero",
-    company: "Byzantine",
-    roleLine: "Founder, Byzantine",
-    industry: "Strategy & Advisory",
-    meta: ["Europe", "12 weeks", "LinkedIn Management"],
-    metrics: [
-      { value: "100%", label: "Posting consistency maintained" },
-      { value: "4×", label: "Growth in profile views within 60 days" },
-      { value: "12+", label: "Qualified inbound conversations in 90 days" },
+    id: "brian-portnoy",
+    name: "Brian Portnoy",
+    company: "Shaping Wealth",
+    roleLine: "Founder & CEO, Shaping Wealth",
+    industry: "Behavioral Finance & AI",
+    meta: ["United States", "Fractional", "Chief of Staff"],
+    hats: [
+      "Chief of Staff",
+      "Operations Manager",
+      "Product Manager",
+      "Project Manager",
+      "Gets It Done",
     ],
+    // Drafted for Brian from the engagement record (Lydia routing,
+    // platform brief, agent specs, team comms). Riz has his approval.
     quote:
-      "I knew what good LinkedIn looked like. I just couldn't make it happen alongside everything else. Handing it to Social Catalyst was the right call. Within a few weeks it felt like my profile finally sounded like me.",
-    initials: "GF",
-    accent: "#1f7a8c",
-    image: "/images/testimonials/gaia-ferrero.jpg",
-    isPlaceholder: true,
+      "Riz was the person on our team who made things happen. Chief of staff one week, product manager the next, project and operations lead in between. Whatever Lydia needed, he picked it up and finished it.",
+    fullQuote: [
+      "Riz worked with me at Shaping Wealth while we built Lydia, our AI coaching platform for financial advisors. His title said product manager. In practice he was my chief of staff, our operations manager, our product manager and our project manager, often in the same week.",
+      "He took decisions that were stuck in conversation and turned them into something the team could act on: a clear recommendation on how Lydia should be structured, a plain-English brief on why our existing platform couldn't carry it, and the specs and templates our engineers built from. He kept the team informed, kept the work moving, and never needed chasing.",
+      "The simplest way I can put it: Riz gets things done. If you're a founder with more priorities than people, he's the person you want next to you.",
+    ],
+    initials: "BP",
+    accent: "#22332C",
+    image: "/images/testimonials/brian-portnoy.jpg",
   },
   {
     id: "shahzad-akhtar",
@@ -90,7 +96,7 @@ export const testimonials: Testimonial[] = [
     company: "Strateasy Consulting",
     roleLine: "Founder & Managing Director, Strateasy Consulting",
     industry: "Management Consulting",
-    meta: ["Pakistan", "5 months (ongoing)", "Management Consulting"],
+    meta: ["Pakistan", "5 months", "GTM & Personal Positioning"],
     metrics: [
       { value: "29%", label: "Outreach Reply Rate" },
       { value: "6×", label: "Profile Views in 60 Days" },
@@ -101,7 +107,6 @@ export const testimonials: Testimonial[] = [
     initials: "SA",
     accent: "#103129",
     image: "/images/testimonials/shahzad-akhtar.jpg",
-    isPlaceholder: true,
   },
   {
     id: "kaitlin-malaspina",
@@ -216,7 +221,7 @@ function Slide({ t, active, onOpen }: { t: Testimonial; active: boolean; onOpen:
  * its size. Native <dialog>: Esc, the close button or a click on the
  * backdrop closes it, and focus returns to the button that opened it.
  */
-function TestimonialDialog({ t, onClose }: { t: Testimonial | null; onClose: () => void }) {
+export function TestimonialDialog({ t, onClose }: { t: Testimonial | null; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
