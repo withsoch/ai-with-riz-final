@@ -10,7 +10,7 @@ import { SITE_URL } from "@/lib/seo";
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = [
-    "", "/about", "/services", "/services/consulting", "/services/projects", "/services/speaking", "/case-studies", "/articles", "/guides", "/writing", "/booking",
+    "", "/about", "/services", "/services/consulting", "/services/projects", "/services/speaking", "/case-studies", "/articles", "/guides", "/blog", "/booking",
     ...getAllGuides().map((g) => `/guides/${g.slug}`)
   ].map((route) => ({ url: `${SITE_URL}${route}` }));
 

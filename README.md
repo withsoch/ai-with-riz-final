@@ -39,8 +39,8 @@ npm run lint
 | [aiwithriz.com/services/projects](https://aiwithriz.com/services/projects) | Soch builds | Live | Not hidden | Indexed | Yes | No | No (linked from pages) |
 | [aiwithriz.com/services/speaking](https://aiwithriz.com/services/speaking) | Speaking | Live | Not hidden | Indexed | Yes | No | Work with me |
 | [aiwithriz.com/case-studies](https://aiwithriz.com/case-studies) | 20 case studies | Live | Not hidden | Indexed | Yes | Case studies | Explore, Work with me |
-| [aiwithriz.com/blog](https://aiwithriz.com/blog) | Writing (Substack posts) | Live | Not hidden | Indexed | No* | Writing | Explore |
-| [aiwithriz.com/writing](https://aiwithriz.com/writing) | Old address, redirects to /blog | Redirect | Not hidden | Indexed (redirect) | Yes | No | No |
+| [aiwithriz.com/blog](https://aiwithriz.com/blog) | Writing (Substack posts) | Live | Not hidden | Indexed | Yes | Writing | Explore |
+| [aiwithriz.com/writing](https://aiwithriz.com/writing) | Old address, redirects to /blog | Redirect | Not hidden | Redirects | No | No | No |
 | [aiwithriz.com/articles](https://aiwithriz.com/articles) | Articles index | Live | Not hidden | Indexed | Yes | Articles | No |
 | [/articles/[slug]](https://aiwithriz.com/articles/automate-the-waiting-not-the-work) | 7 articles, one page each | Live | Not hidden | Indexed | Yes | No | No |
 | [aiwithriz.com/guides](https://aiwithriz.com/guides) | Guides index | Live | Not hidden | Indexed | Yes | Guides | Explore |
@@ -52,7 +52,6 @@ npm run lint
 
 - **Visibility:** *Not hidden* pages are linked from the site. *Hidden* pages open by URL only and aren't linked anywhere.
 - **Google:** *Not indexed* pages tell search engines to leave them out (`noindex`).
-- **\*** `/blog` is indexed and linked everywhere, but the sitemap lists the old `/writing` address, which redirects to it. Worth switching to `/blog` in `app/sitemap.ts`.
 - Also: `app/api/writing-posts`, a JSON endpoint the homepage calls to refresh the writing list. Not a page.
 
 ### Support page (tip jar)
