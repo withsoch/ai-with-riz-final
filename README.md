@@ -28,16 +28,36 @@ npm run start        # serve the production build
 npm run lint
 ```
 
-## Routes
+## Pages
 
-```
-/                        /services                 /guides
-/about                   /services/consulting      /guides/[slug]
-/booking                 /services/projects        /blog
-/case-studies            /services/speaking        /writing
-```
+| Page | What it is | Status | Visibility | Google | In sitemap | In top menu | In footer |
+|---|---|---|---|---|---|---|---|
+| [aiwithriz.com](https://aiwithriz.com/) | Homepage | Live | Not hidden | Indexed | Yes | Logo | Explore |
+| [aiwithriz.com/about](https://aiwithriz.com/about) | About Riz | Live | Not hidden | Indexed | Yes | About | Explore |
+| [aiwithriz.com/services](https://aiwithriz.com/services) | Services hub | Live | Not hidden | Indexed | Yes | Services | No |
+| [aiwithriz.com/services/consulting](https://aiwithriz.com/services/consulting) | Consulting ($140/hr) | Live | Not hidden | Indexed | Yes | No | Work with me |
+| [aiwithriz.com/services/projects](https://aiwithriz.com/services/projects) | Soch builds | Live | Not hidden | Indexed | Yes | No | No (linked from pages) |
+| [aiwithriz.com/services/speaking](https://aiwithriz.com/services/speaking) | Speaking | Live | Not hidden | Indexed | Yes | No | Work with me |
+| [aiwithriz.com/case-studies](https://aiwithriz.com/case-studies) | 20 case studies | Live | Not hidden | Indexed | Yes | Case studies | Explore, Work with me |
+| [aiwithriz.com/blog](https://aiwithriz.com/blog) | Writing (Substack posts) | Live | Not hidden | Indexed | No* | Writing | Explore |
+| [aiwithriz.com/writing](https://aiwithriz.com/writing) | Old address, redirects to /blog | Redirect | Not hidden | Indexed (redirect) | Yes | No | No |
+| [aiwithriz.com/articles](https://aiwithriz.com/articles) | Articles index | Live | Not hidden | Indexed | Yes | Articles | No |
+| [/articles/[slug]](https://aiwithriz.com/articles/automate-the-waiting-not-the-work) | 7 articles, one page each | Live | Not hidden | Indexed | Yes | No | No |
+| [aiwithriz.com/guides](https://aiwithriz.com/guides) | Guides index | Live | Not hidden | Indexed | Yes | Guides | Explore |
+| [/guides/[slug]](https://aiwithriz.com/guides/zapier-vs-make-vs-n8n) | 16 guides, one page each | Live | Not hidden | Indexed | Yes | No | No |
+| [aiwithriz.com/booking](https://aiwithriz.com/booking) | Booking page | Live | Not hidden | Indexed | Yes | No | No (linked from pages) |
+| [aiwithriz.com/support](https://aiwithriz.com/support) | Support the channel (tip jar) | Live, Stripe links pending | Hidden (link-only, for YouTube) | Not indexed | No | No | No |
+| [aiwithriz.com/support/thanks](https://aiwithriz.com/support/thanks) | Thank-you after a tip | Live | Hidden (Stripe returns here) | Not indexed | No | No | No |
+| [aiwithriz.com/llms.txt](https://aiwithriz.com/llms.txt) | Plain-text summary for AI tools | Live | Not hidden | Readable by crawlers | No | No | No |
 
-Plus `app/api/writing-posts` — a JSON endpoint the homepage calls to refresh the writing list client-side.
+- **Visibility:** *Not hidden* pages are linked from the site. *Hidden* pages open by URL only and aren't linked anywhere.
+- **Google:** *Not indexed* pages tell search engines to leave them out (`noindex`).
+- **\*** `/blog` is indexed and linked everywhere, but the sitemap lists the old `/writing` address, which redirects to it. Worth switching to `/blog` in `app/sitemap.ts`.
+- Also: `app/api/writing-posts`, a JSON endpoint the homepage calls to refresh the writing list. Not a page.
+
+### Support page (tip jar)
+
+The Stripe Payment Link for each card goes in `lib/support.ts`. Each link's "after payment" setting redirects to `https://aiwithriz.com/support/thanks`. The page is link-only, for YouTube descriptions.
 
 ## Type system
 
