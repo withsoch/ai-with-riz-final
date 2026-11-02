@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Your First AI Agent Workflow, Step by Step</title>
+<meta name="guide-date" content="2026-11-02" />
+<meta name="guide-excerpt" content="You can build your first real AI agent this weekend. Here is the four-step order that matters more than whichever tool you pick: narrow task, clear rules, tested by hand, then released." />
+<meta name="guide-category" content="AI Agents" />
+<meta name="guide-tool" content="AI Agents" />
+<style>
+  :root{
+    --coral:#EA6A47;--coral-deep:#C8502F;
+    --cream:#F5EFE0;--cream-2:#FBF7EE;
+    --charcoal:#3D3D3D;--charcoal-soft:#5A5754;--line:#E4DCC9;
+    --code-bg:#000000;--code-head:#1A1815;--code-fg:#F3ECDD;--code-accent:#F0A488;--code-border:#262320;
+    --wrap:760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--cream);color:var(--charcoal);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.68;font-size:18px;-webkit-font-smoothing:antialiased;}
+  a{color:var(--coral-deep);text-decoration:none;border-bottom:1px solid rgba(200,80,47,.28);}
+  a:hover{border-bottom-color:var(--coral-deep);}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--coral);z-index:50;transition:width .1s linear;}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px;}
+  .lede{font-size:21px;color:var(--charcoal-soft);max-width:60ch;margin:0 0 18px;}
+  .quickrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:22px 0 6px;font-size:14px;color:var(--charcoal-soft);}
+  .skip{display:inline-flex;align-items:center;gap:7px;background:var(--cream-2);border:1px solid var(--line);border-radius:999px;padding:8px 16px;color:var(--charcoal);font-weight:600;}
+  .skip:hover{border-color:var(--coral);color:var(--coral-deep);}
+  .readtime{opacity:.85;}
+  h2{font-size:clamp(24px,3.5vw,31px);margin:2.1em 0 .5em;letter-spacing:-.01em;color:var(--charcoal);scroll-margin-top:24px;}
+  h3{font-size:20px;margin:1.7em 0 .4em;color:var(--charcoal);}
+  p{margin:0 0 1.05em;}
+  strong{color:var(--charcoal);font-weight:700;}
+  .muted{color:var(--charcoal-soft);}.small{font-size:16px;}
+  .divider{position:relative;height:1px;background:var(--line);border:0;margin:58px 0 6px;}
+  .divider::before{content:"";position:absolute;left:0;top:-2px;width:44px;height:4px;background:var(--coral);border-radius:2px;}
+  ol,ul{margin:0 0 1.2em;padding-left:1.35em;}li{margin:.45em 0;}
+  .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0 8px;}
+  .step-card{background:var(--cream-2);border:1px solid var(--line);border-radius:14px;padding:18px 16px;}
+  .step-card .n{font-weight:800;color:var(--coral);font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+  .step-card .t{font-weight:700;margin-bottom:4px;}
+  .step-card .d{font-size:15px;color:var(--charcoal-soft);}
+  ol.flow{list-style:none;padding-left:0;counter-reset:step;}
+  ol.flow>li{counter-increment:step;position:relative;padding:14px 18px 14px 60px;margin:10px 0;background:var(--cream-2);border:1px solid var(--line);border-radius:12px;}
+  ol.flow>li::before{content:counter(step);position:absolute;left:16px;top:14px;width:30px;height:30px;border-radius:8px;background:var(--coral);color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;}
+  .callout{border-left:4px solid var(--coral);background:var(--cream-2);border-radius:0 12px 12px 0;padding:16px 20px;margin:18px 0 22px;}
+  .callout .tag{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral-deep);font-weight:800;margin-bottom:5px;}
+  .callout p:last-child{margin-bottom:0;}
+  .prompt{position:relative;margin:26px 0 30px;}
+  .prompt-head{display:flex;align-items:center;justify-content:space-between;background:var(--code-head);border-radius:12px 12px 0 0;padding:9px 14px 9px 16px;border:1px solid var(--code-border);border-bottom:none;}
+  .prompt-head .lbl{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--code-accent);font-weight:700;}
+  .copy-btn{background:transparent;color:#D9D2C4;border:1px solid #3A3733;border-radius:7px;font-size:12.5px;padding:4px 11px;cursor:pointer;transition:all .15s;font-family:inherit;}
+  .copy-btn:hover{background:var(--coral);color:#fff;border-color:var(--coral);}
+  pre{background:var(--code-bg);color:var(--code-fg);border:1px solid var(--code-border);border-top:none;border-radius:0 0 12px 12px;padding:20px 22px;margin:0;overflow-x:auto;font-size:14.5px;line-height:1.62;font-family:"SF Mono",SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;}
+  pre .brk{color:var(--code-accent);font-weight:600;}
+  .ex{width:100%;border-collapse:collapse;margin:14px 0 8px;font-size:16px;}
+  .ex td{border-bottom:1px solid var(--line);padding:11px 6px;vertical-align:top;}
+  .ex td:first-child{color:var(--coral-deep);font-weight:700;width:120px;white-space:nowrap;}
+  .honest li{margin:.55em 0;}
+  .cta{margin-top:44px;background:var(--charcoal);color:var(--cream);border-radius:18px;padding:32px 30px;}
+  .cta h2{color:#fff;margin:0 0 .35em;}
+  .cta p{color:#DAD3C4;margin-bottom:1em;}
+  .cta a.button{display:inline-block;background:var(--coral);color:#fff;padding:12px 24px;border-radius:10px;font-weight:700;text-decoration:none;border:none;}
+  .cta a.button:hover{background:var(--coral-deep);}
+  .cta a{color:#F3B39C;}
+  .guide-foot{margin:34px 0 90px;padding-top:22px;border-top:1px solid var(--line);color:var(--charcoal-soft);font-size:15px;}
+  .foot-follow{font-size:17px;color:var(--charcoal);}
+  .guide-foot a{color:var(--coral-deep);}
+  .foot-meta{margin-top:10px;font-size:14px;}
+  @media(max-width:640px){body{font-size:17px;}.steps3{grid-template-columns:1fr;}.ex td:first-child{width:96px;}}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.progress{transition:none;}}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="wrap">
+
+  <p class="lede">You can build your first real AI agent this weekend. The thing that decides whether it works isn't the tool you pick, it's the order you build in. Here's that order, four steps, no skipping.</p>
+
+  <img src="images/build-your-first-ai-agent-workflow-step-by-step.webp" alt="A four-step path from a narrow task to a released AI agent workflow" style="width:100%;border-radius:16px;margin:22px 0 8px;border:1px solid var(--line);">
+
+  <div class="quickrow">
+    <a class="skip" href="#start">↓ Skip to the four steps</a>
+    <span class="readtime">5 min read · any agent tool</span>
+  </div>
+
+  <h2>The short version 🧭</h2>
+  <p>Most first agents fail because they're too ambitious on day one: a vague job, no limits, and a trigger switched on before anyone has watched it run. The fix is boring and reliable.</p>
+  <div class="callout"><span class="tag">The order that matters</span><p>Narrow task, clear rules, tested by hand, then released. Get that sequence right and almost any tool will do.</p></div>
+
+  <div class="steps3">
+    <div class="step-card"><div class="n">Step 1</div><div class="t">Pick one task</div><div class="d">Narrow enough to do by hand if it breaks.</div></div>
+    <div class="step-card"><div class="n">Step 2</div><div class="t">Set the rules</div><div class="d">Trigger, one tool, and what to do when unsure.</div></div>
+    <div class="step-card"><div class="n">Step 3 + 4</div><div class="t">Test, then release</div><div class="d">Happy path, one fallback, then let it run.</div></div>
+  </div>
+
+  <hr class="divider">
+
+  <h2 id="start">The four steps, in order</h2>
+
+  <ol class="flow">
+    <li><strong>Pick ONE narrow task.</strong> Not "manage my whole business." Something like "read new form submissions and draft a reply." The test: it should be narrow enough that you could still do it manually if the agent broke.</li>
+    <li><strong>Define three things before you build anything.</strong> What triggers it, what tool it's actually allowed to use, and what it does when it's unsure. Details in the next section.</li>
+    <li><strong>Build the happy path first.</strong> Run it manually, end to end, before the trigger ever goes live. Watch it work on a real example, not a made-up one.</li>
+    <li><strong>Add one fallback, then release slowly.</strong> Cover the case where something is missing or wrong. Only after it has run cleanly a handful of times with you watching do you let it run on its own.</li>
+  </ol>
+
+  <hr class="divider">
+
+  <h2>Step 2 in detail: the three rules 📏</h2>
+  <p>This is the step people skip, and it's the one that keeps your agent from doing something you didn't intend. Write these down before you open any builder.</p>
+  <table class="ex">
+    <tr><td>Trigger</td><td>What starts it. A new form submission, a new email, a scheduled time. One trigger, stated in a single sentence.</td></tr>
+    <tr><td>Tool</td><td>What it's allowed to use. Start with just one, and make it the safe one: drafting, not sending. You can widen this later.</td></tr>
+    <tr><td>When unsure</td><td>Stop and ask you. Never guess. An agent that pauses is annoying; an agent that improvises on a customer reply is expensive.</td></tr>
+  </table>
+
+  <p>A quick way to pin it down is to fill in this template before you build:</p>
+
+  <div class="prompt">
+    <div class="prompt-head"><span class="lbl">Agent spec · fill in before building</span><button class="copy-btn" data-target="p1">Copy</button></div>
+    <pre id="p1">Task (one sentence): <span class="brk">[e.g. Read new form submissions and draft a reply]</span>
+Trigger: <span class="brk">[what starts it]</span>
+Allowed tool (just one): <span class="brk">[e.g. draft reply, do NOT send]</span>
+If unsure: stop and notify me with <span class="brk">[what it was unsure about]</span>
+Manual fallback: <span class="brk">[how I'd do this by hand if it breaks]</span></pre>
+  </div>
+
+  <hr class="divider">
+
+  <h2>Steps 3 and 4 in practice 🔍</h2>
+  <h3>Build the happy path first</h3>
+  <p>Wire up only the case where everything goes right. Then run it by hand, start to finish, on a real example. Don't connect the live trigger yet. You're watching for whether the output is actually what you'd have written yourself.</p>
+  <h3>Add one fallback</h3>
+  <p>Pick the most likely way it goes wrong, usually a missing field or an input it doesn't understand, and give it a single clear response: stop and flag it to you. One fallback is enough for a first version.</p>
+  <h3>Release only after you've watched it</h3>
+  <p>Let it run a handful of times with you looking at every result. If it's been clean each time, turn on the trigger and let it go. If something surprises you, that's the fallback you're missing.</p>
+
+  <hr class="divider">
+
+  <h2>How to get the most out of it 🎓</h2>
+  <ul>
+    <li><strong>Resist adding a second task.</strong> Get one agent working properly before you give it more to do.</li>
+    <li><strong>Keep it on drafting for a while.</strong> Moving from "draft" to "send" is a real decision. Make it deliberately, after the drafts have been good for a while.</li>
+    <li><strong>Use real examples to test.</strong> Real submissions have typos, blanks, and oddities that invented ones never do.</li>
+    <li><strong>Keep your manual process alive.</strong> If you can still do the task by hand, a broken agent is an inconvenience, not a crisis.</li>
+  </ul>
+
+  <h2 id="honest">The honest bit ✅</h2>
+  <ul class="honest">
+    <li><strong>This won't make a flashy first agent.</strong> A narrow draft-a-reply workflow isn't impressive in a demo. It's useful, which is the point.</li>
+    <li><strong>"Stop and ask" means more interruptions early on.</strong> That's the price of safety, and it drops as you tighten the rules and add fallbacks.</li>
+    <li><strong>A handful of clean runs isn't proof it's bulletproof.</strong> It's enough to release a low-risk, draft-only agent. It isn't enough to hand over anything sensitive without more checks.</li>
+    <li><strong>The tool matters less than the order, but it still matters a bit.</strong> Pick one you can actually inspect step by step, so you can see what the agent did and why.</li>
+  </ul>
+
+  <div class="cta">
+    <h2>Want the checklist for this weekend? 📩</h2>
+    <p>DM <strong style="color:#fff;">"AGENT"</strong> and I'll send you the exact 4-step checklist to build your first one. If you'd rather have it built and tested for you, that's the done-for-you route.</p>
+    <p><a class="button" href="https://cal.com/consult-with-riz/work" target="_blank" rel="noopener noreferrer">Book a call →</a></p>
+  </div>
+
+  <div class="guide-foot">
+    <p class="foot-follow">Follow <a href="https://www.instagram.com/etz.riz/reels/" target="_blank" rel="noopener noreferrer">@itsriz</a> for AI tips every single day.</p>
+    <p class="foot-meta">Written by <strong>Riz</strong></p>
+  </div>
+
+</div>
+
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var max=h.scrollHeight-h.clientHeight;bar.style.width=(max>0?(h.scrollTop||document.body.scrollTop)/max*100:0)+'%';}
+  document.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);upd();
+
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.getElementById(btn.dataset.target);var text=el.innerText;
+      function done(){var old=btn.textContent;btn.textContent='Copied \u2713';setTimeout(function(){btn.textContent=old;},1500);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(function(){fallback(text,done);});}
+      else{fallback(text,done);}
+    });
+  });
+  function fallback(text,cb){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);cb();}
+</script>
+
+</body>
+</html>
